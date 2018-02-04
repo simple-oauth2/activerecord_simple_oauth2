@@ -1,0 +1,30 @@
+language: ruby
+cache: bundler
+bundler_args: --without yard guard benchmarks
+notifications:
+  email: false
+
+addons:
+  code_climate:
+    repo_token: a79dc140c09279df903bea582c17d13eecb4e8d80a4d92e1e14f177c74547cc6
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+  include:
+  - rvm: 2.2.6
+  - rvm: 2.3.3
+  - rvm: 2.5.0
+  - rvm: ruby-head
+
+after_success:
+  - bundle exec codeclimate-test-reporter
+
+before_install:
+  - gem install bundler -v '~> 1.10'
+  - bundle install
+  - rake db:create
+  - rake db:migrate
+
+script:
+  - rspec spec
